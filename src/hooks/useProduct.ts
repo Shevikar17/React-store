@@ -1,0 +1,29 @@
+import { useState, useEffect } from "react";
+import type { Product } from "../types/product";
+
+export const useProducts = (category?: string) =>{
+    
+    const [products, setProducts] = useState<Product[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        const url = category
+        ? `https://fakestoreapi.com/products/category/${category}`
+        : `https://fakestoreapi.com/products`;
+
+        fetch(url)
+            .then( res => res.json())
+            .then( data => {
+                setProducts(data)
+                setLoading(false)
+            })
+            .catch(() => {
+                setError('Failed to Load Products')
+                setLoading(false)
+            })
+    }, [category])
+
+    return {products, loading, error};
+
+}
